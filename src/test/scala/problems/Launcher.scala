@@ -78,7 +78,7 @@ object Launcher {
       }
     },
     "Mul" -> { (manager: TesterOptionsManager) =>
-      Driver.execute(() => new Mul(), manager) {
+      Driver.execute(() => new Mul(4), manager) {
         (c) => new MulTests(c)
       }
     },

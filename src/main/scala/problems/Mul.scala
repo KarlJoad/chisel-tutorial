@@ -8,22 +8,22 @@ import scala.collection.mutable.ArrayBuffer
 //
 // Implement a four-by-four multiplier using a look-up table.
 //
-class Mul extends Module {
+class Mul(inWidth: Int) extends Module {
   val io = IO(new Bundle {
-    val x   = Input(UInt(4.W))
-    val y   = Input(UInt(4.W))
-    val z   = Output(UInt(8.W))
+    val x   = Input(UInt(inWidth.W))
+    val y   = Input(UInt(inWidth.W))
+    val z   = Output(UInt((inWidth * 2).W))
   })
   val mulsValues = new ArrayBuffer[UInt]()
 
   // Calculate io.z = io.x * io.y by generating a "table" of values for mulsValues
-  for (i <- 0 until (1 << io.x.getWidth))
-    for (j <- 0 until (1 << io.y.getWidth))
-      mulsValues += (i * j).asUInt(8.W)
+  for (i <- 0 until (1 << inWidth))
+    for (j <- 0 until (1 << inWidth))
+      mulsValues += (i * j).asUInt((inWidth * 2).W)
 
   // Initialize the table of values
   val tbl_vals = VecInit(mulsValues)
 
   // Index into the "table" by using the inputs
-  io.z := tbl_vals((io.x << io.x.getWidth) | io.y)
+  io.z := tbl_vals((io.x << inWidth) | io.y)
 }
