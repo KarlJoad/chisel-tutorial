@@ -22,8 +22,10 @@ class Memo extends Module {
 
   val mem = Mem(256, UInt(8.W))
 
-  // Implement below ----------
+  when(io.wen) { mem(io.wrAddr) := io.wrData }
 
-  // Implement above ----------
+  // Here to make the compiler happy. Otherwise io is not fully initialized
+  io.rdData := 0.U
 
+  when(io.ren) { io.rdData := mem(io.rdAddr) }
 }
