@@ -11,17 +11,18 @@ import chisel3._
 //
 object Counter {
 
-  def wrapAround(n: UInt, max: UInt) = 
+  def wrapAround(n: UInt, max: UInt) =
     Mux(n > max, 0.U, n)
 
-  // Modify below ----------
   def counter(max: UInt, en: Bool, amt: UInt): UInt = {
     val x = RegInit(0.U(max.getWidth.W))
-    x := wrapAround(x + 1.U, max)
-    x
+    when(en) {
+      x := wrapAround(x + amt, max)
+    } .otherwise {
+      x := x
+    }
+    x // Make sure the returned value of the counter function is UInt
   }
-  // Modify above ----------
-
 }
 
 class Counter extends Module {
