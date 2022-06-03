@@ -16,9 +16,14 @@ class Mul extends Module {
   })
   val mulsValues = new ArrayBuffer[UInt]()
 
-  // Calculate io.z = io.x * io.y by generating a table of values for mulsValues
+  // Calculate io.z = io.x * io.y by generating a "table" of values for mulsValues
+  for (i <- 0 until (1 << io.x.getWidth))
+    for (j <- 0 until (1 << io.y.getWidth))
+      mulsValues += (i * j).asUInt(8.W)
 
-  // Implement below ----------
+  // Initialize the table of values
+  val tbl_vals = VecInit(mulsValues)
 
-  // Implement above ----------
+  // Index into the "table" by using the inputs
+  io.z := tbl_vals((io.x << io.x.getWidth) | io.y)
 }
