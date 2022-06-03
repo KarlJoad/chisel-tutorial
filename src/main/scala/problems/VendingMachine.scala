@@ -21,11 +21,20 @@ class VendingMachine extends Module {
   val sIdle :: s5 :: s10 :: s15 :: sOk :: Nil = Enum(5)
   val state = RegInit(sIdle)
 
-  // Implement below ----------
-
-  state := s5
-
-  // Implement above ----------
+  when(state === sIdle) {
+    when(io.nickel) { state := s5 }
+    when(io.dime)   { state := s10 }
+  } .elsewhen(state === s5) {
+    when(io.nickel) { state := s10 }
+    when(io.dime)   { state := s15 }
+  } .elsewhen(state === s10) {
+    when(io.nickel) { state := s15 }
+    when(io.dime)   { state := sOk }
+  } .elsewhen(state === s15) {
+    when(io.nickel || io.dime) { state := sOk }
+  } .elsewhen(state === sOk) {
+    state := sIdle
+  }
 
   io.valid := (state === sOk)
 }
